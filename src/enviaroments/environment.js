@@ -3,4 +3,5 @@ export default environment = {
   apiKeyGiphy: "",
   apiGiphyLimit: 10,
   giphyFavorite: "giphy-favorite",
+  giphyCache: "giphyCache",
 };

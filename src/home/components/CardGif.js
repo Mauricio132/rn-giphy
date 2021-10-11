@@ -2,18 +2,37 @@ import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { Button } from "react-native-paper";
 import { showToastShort } from "../../shared/ToastCustom";
+import { openShareDialogAsync } from "../../shared/ShareSocialCustom";
 import { updateGifsFovorite } from "../../favorite/services/FavoriteService";
+import {
+  getSingleGif,
+  deleteAllGifs,
+} from "../../home/services/FileSystemService";
 import { color } from "../../styles";
 
 export default function CardGif(props) {
   //props recibidos
-  const { itemGif } = props;
+  const { itemGif, setSharing } = props;
 
   //funcion, añadir a favorito
   const addFovorite = (itemGif) => {
-    showToastShort("Añadiendo a favoritos");
-    //console.log(itemGif);
+    showToastShort(`Añadiendo ${itemGif.title} a favoritos `);
     updateGifsFovorite(itemGif);
+  };
+
+  //funcion, share social
+  const shareSocialGif = async (id) => {
+    try {
+      setSharing(true);
+      const response = await getSingleGif(id);
+      await openShareDialogAsync(response);
+      deleteAllGifs();
+      setSharing(false);
+    } catch (error) {
+      showToastShort(`Ocurrio un error, vuelva a intentarlo`);
+      setSharing(false);
+      console.error("error", error);
+    }
   };
 
   return (
@@ -25,17 +44,28 @@ export default function CardGif(props) {
             uri: `${itemGif.url}`,
           }}
         />
+        <Text style={[styles.name]} numberOfLines={2} ellipsizeMode="tail">
+          {itemGif.title}
+        </Text>
         <View style={styles.action}>
-          <Text style={[styles.name]} numberOfLines={2} ellipsizeMode="tail">
-            {itemGif.title}
-          </Text>
+          <Button
+            style={styles.button}
+            mode="text"
+            icon="share"
+            labelStyle={styles.buttonLabel}
+            onPress={() => shareSocialGif(itemGif.id)}
+          >
+            Compartir
+          </Button>
           <Button
             style={styles.button}
             mode="text"
             icon="heart"
-            labelStyle={[styles.buttonLabel, { color: color.success }]}
+            labelStyle={styles.buttonLabel}
             onPress={() => addFovorite(itemGif)}
-          />
+          >
+            Favorito
+          </Button>
         </View>
       </View>
     </View>
@@ -49,7 +79,7 @@ const styles = StyleSheet.create({
   },
   product: {
     padding: 5,
-    borderWidth: 0.5,
+    borderBottomWidth: 0.2,
   },
   image: {
     height: 150,
@@ -59,17 +89,16 @@ const styles = StyleSheet.create({
     fontSize: 15,
     paddingVertical: 3,
     paddingStart: 10,
-    color: color.secondary,
-    width: "65%",
+    color: color.global,
   },
   action: {
     flexDirection: "row",
   },
   button: {
-    width: "10%",
+    width: "50%",
   },
   buttonLabel: {
-    fontSize: 20,
-    color: color.global,
+    fontSize: 12,
+    color: color.secondary,
   },
 });

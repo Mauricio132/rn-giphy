@@ -11,7 +11,7 @@ import { color } from "../../styles";
 
 export default function SectionGifs(props) {
   //props recibidos, termi de busqueeda
-  const { search } = props;
+  const { search, setSharing } = props;
   //variable de estado, objeto que contendra elementos recibidos desde la api
   const [apiGiphy, setApiGiphy] = useState([]);
   ///variable de estado, loadingfooter | condicion para activar spinner de carga
@@ -72,7 +72,9 @@ export default function SectionGifs(props) {
   }, [pagination]); // ejecucion cada que la variable pagination cambie cambie su valor
 
   //funcion, renderizar item del array
-  const renderItem = ({ item }) => <CardGif itemGif={item} />;
+  const renderItem = ({ item }) => (
+    <CardGif itemGif={item} setSharing={setSharing} />
+  );
 
   //funcion, renderizar componente footerList(loading) | muestra un spinner de carga al final de la lista
   const renderFooter = () => {

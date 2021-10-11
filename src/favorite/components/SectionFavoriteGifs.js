@@ -6,11 +6,15 @@ import CardGif from "./CardFavoriteGif";
 
 export default function SectionFavoriteGifs(props) {
   //props recibidos, termi de busqueeda
-  const { favorites, setItemDeleted } = props;
+  const { favorites, setItemDeleted, setSharing } = props;
 
   //renderizamos el item del array
   const renderItem = ({ item }) => (
-    <CardGif itemGif={item} setItemDeleted={setItemDeleted} />
+    <CardGif
+      itemGif={item}
+      setItemDeleted={setItemDeleted}
+      setSharing={setSharing}
+    />
   );
 
   return (

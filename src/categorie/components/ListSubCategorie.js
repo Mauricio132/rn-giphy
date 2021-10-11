@@ -5,6 +5,7 @@ import {
   TouchableNativeFeedback,
   StyleSheet,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { Button } from "react-native-paper";
 import AwesomeIcon from "react-native-vector-icons/FontAwesome";
@@ -17,6 +18,8 @@ export default function ListSubCategorie(props) {
   const { subcategorie, setShowSearch, showSearch } = props;
   //variable de estado, termino de busqueda
   const [search, setSearch] = useState("");
+  //variable de estado, onPress Compartir
+  const [sharing, setSharing] = useState(false);
 
   //funcion, asignar termino de busqueda y mostrar busqueda
   const searchOn = (term) => {
@@ -45,7 +48,13 @@ export default function ListSubCategorie(props) {
               Volver
             </Button>
           </View>
-          <SectionGifs search={search} />
+          <SectionGifs search={search} setSharing={setSharing} />
+          {sharing && (
+            <View style={layoutStyle.reload}>
+              <ActivityIndicator size="large" color={color.white} />
+              <Text style={layoutStyle.reloadText}>Compartiendo...</Text>
+            </View>
+          )}
         </>
       ) : (
         <ScrollView style={styles.container}>

@@ -1,19 +1,39 @@
-import React from "react";
-import { View, Text, StyleSheet, Image, Share } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, Image } from "react-native";
 import { Button } from "react-native-paper";
 import { showToastShort } from "../../shared/ToastCustom";
+import { openShareDialogAsync } from "../../shared/ShareSocialCustom";
 import { deleteGifsFovorite } from "../services/FavoriteService";
+import {
+  getSingleGif,
+  deleteAllGifs,
+} from "../../home/services/FileSystemService";
 import { color } from "../../styles";
 
 export default function CardGif(props) {
   //props recibidos
-  const { itemGif, setItemDeleted } = props;
+  const { itemGif, setItemDeleted, setSharing } = props;
 
   //funcion, eliminar a favorito
   const deleteFovorite = (itemGif) => {
     setItemDeleted(true);
-    showToastShort("eliminando de favoritos");
+    showToastShort("eliminando de favoritos...");
     deleteGifsFovorite(itemGif);
+  };
+
+  //funcion, share social
+  const shareSocialGif = async (id) => {
+    try {
+      setSharing(true);
+      const response = await getSingleGif(id);
+      await openShareDialogAsync(response);
+      deleteAllGifs();
+      setSharing(false);
+    } catch (error) {
+      showToastShort(`Ocurrio un error, vuelva a intentarlo`);
+      setSharing(false);
+      console.error("error", error);
+    }
   };
 
   return (
@@ -25,17 +45,29 @@ export default function CardGif(props) {
             uri: `${itemGif.url}`,
           }}
         />
+        <Text style={[styles.name]} numberOfLines={2} ellipsizeMode="tail">
+          {itemGif.title}
+        </Text>
         <View style={styles.action}>
-          <Text style={[styles.name]} numberOfLines={2} ellipsizeMode="tail">
-            {itemGif.title}
-          </Text>
+          <Button
+            style={styles.button}
+            mode="text"
+            icon="share"
+            labelStyle={styles.buttonLabel}
+            onPress={() => shareSocialGif(itemGif.id)}
+          >
+            Compartir
+          </Button>
+
           <Button
             style={styles.button}
             mode="text"
             icon="heart"
-            labelStyle={[styles.buttonLabel, { color: color.danger }]}
+            labelStyle={styles.buttonLabel}
             onPress={() => deleteFovorite(itemGif)}
-          />
+          >
+            Eliminar
+          </Button>
         </View>
       </View>
     </View>
@@ -49,7 +81,7 @@ const styles = StyleSheet.create({
   },
   product: {
     padding: 5,
-    borderWidth: 0.5,
+    borderBottomWidth: 0.2,
   },
   image: {
     height: 150,
@@ -59,17 +91,16 @@ const styles = StyleSheet.create({
     fontSize: 15,
     paddingVertical: 3,
     paddingStart: 10,
-    color: color.secondary,
-    width: "65%",
+    color: color.global,
   },
   action: {
     flexDirection: "row",
   },
   button: {
-    width: "10%",
+    width: "50%",
   },
   buttonLabel: {
-    fontSize: 20,
-    color: color.global,
+    fontSize: 12,
+    color: color.secondary,
   },
 });

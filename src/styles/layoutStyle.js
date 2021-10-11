@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 import color from "./color";
 
 const layoutStyle = StyleSheet.create({
@@ -21,6 +21,19 @@ const layoutStyle = StyleSheet.create({
     paddingVertical: 10,
     fontSize: 18,
     fontWeight: "normal",
+  },
+  reload: {
+    backgroundColor: "#000",
+    position: "absolute",
+    width: "100%",
+    height: Dimensions.get("window").height,
+    opacity: 0.7,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  reloadText: {
+    marginTop: 10,
+    color: "#fff",
   },
 });
 
